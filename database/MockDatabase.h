@@ -21,6 +21,7 @@ class MockDatabase : public Database {
 
     private:
         std::unordered_map<int, User> users;
+        std::unordered_map<std::string, int> userIdsByUsername;
         std::unordered_map<std::string, Chat> chats;
         std::unordered_map<std::string, Message> messages;
         int nextUserId = 1;

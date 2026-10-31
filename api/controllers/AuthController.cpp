@@ -27,7 +27,7 @@ crow::response AuthController::registerUser(const crow::request& request) {
     }
 
     const AuthResponse response = authService.registerUser(*username, *password);
-    if (!response.success_) {
+    if (!response.success) {
         return HttpResponses::error(400, "Username is taken or password is too short");
     }
     return HttpResponses::json(201, JsonMapper::toJson(*response.response_data));
@@ -42,7 +42,7 @@ crow::response AuthController::login(const crow::request& request) {
     }
 
     const AuthResponse response = authService.login(*username, *password);
-    if (!response.success_) {
+    if (!response.success) {
         return HttpResponses::error(401, "Invalid username or password");
     }
     return HttpResponses::json(200, JsonMapper::toJson(*response.response_data));

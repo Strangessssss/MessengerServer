@@ -4,11 +4,12 @@
 #include <string>
 
 #include "../../services/ChatsService/ChatsService.h"
+#include "../../services/UsersService/UsersService.h"
 #include "../http/AuthGuard.h"
 
 class ChatsController {
     public:
-        ChatsController(ChatsService& chatsService, const AuthGuard& authGuard);
+        ChatsController(ChatsService& chatsService, UsersService& usersService ,const AuthGuard& authGuard);
 
         void registerRoutes(crow::SimpleApp& app);
 
@@ -19,5 +20,6 @@ class ChatsController {
         crow::response deleteChat(const std::string& chatId, int userId);
 
         ChatsService& chatsService;
+        UsersService& usersService;
         const AuthGuard& authGuard;
 };

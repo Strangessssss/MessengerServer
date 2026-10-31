@@ -13,7 +13,7 @@ namespace {
         if (response.not_found()) {
             return HttpResponses::error(404, "Chat or user not found");
         }
-        if (!response.success_) {
+        if (!response.success) {
             return HttpResponses::error(400, "Message was rejected");
         }
         return HttpResponses::json(201, JsonMapper::toJson(*response.response_data));

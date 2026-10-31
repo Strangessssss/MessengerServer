@@ -3,10 +3,10 @@
 #include <vector>
 
 #include "../../repositories/ChatsRepository/ChatsRepository.h"
-#include "../../repositories/ChatsRepository/DTOs/responses/ChatListResponse.h"
-#include "../../repositories/ChatsRepository/DTOs/responses/ChatResponse.h"
-#include "../../repositories/ChatsRepository/DTOs/responses/ChatSummaryListResponse.h"
-#include "../../repositories/ChatsRepository/DTOs/responses/ChatViewResponse.h"
+#include "DTOs/responses/ChatListResponse.h"
+#include "DTOs/responses/ChatResponse.h"
+#include "DTOs/responses/ChatSummaryListResponse.h"
+#include "DTOs/responses/ChatViewResponse.h"
 #include "../../repositories/MessagesRepository/MessagesRepository.h"
 #include "../../repositories/UsersRepository/UsersRepository.h"
 

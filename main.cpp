@@ -1,5 +1,4 @@
 #include <crow.h>
-
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -16,6 +15,7 @@
 #include "services/ChatsService/ChatsService.h"
 #include "services/MessagesService/MessagesService.h"
 #include "services/TokenService/TokenService.h"
+#include "services/UsersService/UsersService.h"
 
 namespace {
     constexpr int port = 8080;
@@ -41,10 +41,11 @@ int main() {
     AuthService authService(usersRepository, tokenService);
     ChatsService chatsService(chatsRepository, messagesRepository, usersRepository);
     MessagesService messagesService(messagesRepository, chatsRepository, usersRepository);
+    UsersService usersService(usersRepository);
 
     AuthGuard authGuard(authService);
     AuthController authController(authService);
-    ChatsController chatsController(chatsService, authGuard);
+    ChatsController chatsController(chatsService, usersService, authGuard);
     MessagesController messagesController(messagesService, authGuard);
 
     crow::SimpleApp app;

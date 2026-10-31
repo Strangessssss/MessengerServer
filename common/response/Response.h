@@ -4,10 +4,10 @@
 
 template <typename T>
 struct Response {
-    explicit Response(std::optional<T> data, bool success = true) : success_(success), response_data(std::move(data)) {}
+    explicit Response(std::optional<T> data, bool success = true) : success(success), response_data(std::move(data)) {}
 
-    bool not_found() const { return success_ && !response_data.has_value(); }
+    bool not_found() const { return success && !response_data.has_value(); }
 
-    const bool success_;
+    const bool success;
     std::optional<T> response_data;
 };

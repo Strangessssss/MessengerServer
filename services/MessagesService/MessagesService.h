@@ -2,8 +2,8 @@
 #include <string>
 
 #include "../../repositories/ChatsRepository/ChatsRepository.h"
-#include "../../repositories/MessagesRepository/DTOs/responses/MessageListResponse.h"
-#include "../../repositories/MessagesRepository/DTOs/responses/MessageResponse.h"
+#include "DTOs/responses/MessageListResponse.h"
+#include "DTOs/responses/MessageResponse.h"
 #include "../../repositories/MessagesRepository/MessagesRepository.h"
 #include "../../repositories/UsersRepository/UsersRepository.h"
 

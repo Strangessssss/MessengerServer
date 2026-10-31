@@ -3,6 +3,8 @@
 
 #include "../../services/AuthService/AuthService.h"
 
+class UsersService;
+
 class AuthController {
     public:
         explicit AuthController(AuthService& authService);

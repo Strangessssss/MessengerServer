@@ -30,6 +30,17 @@ FetchContent_MakeAvailable(crow)
 if(APPLE AND NOT OPENSSL_ROOT_DIR AND EXISTS /opt/homebrew/opt/openssl@3)
     set(OPENSSL_ROOT_DIR /opt/homebrew/opt/openssl@3)
 endif()
+if(MINGW AND NOT OPENSSL_ROOT_DIR)
+    # Prebuilt for MinGW-w64 with MSVCRT, matching CLion's bundled toolchain.
+    FetchContent_Declare(
+            openssl_mingw
+            URL https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-openssl-3.6.5-1-any.pkg.tar.zst
+            URL_HASH SHA256=389D1AF21E99223D9E2CD32D4C073131B276DA85BE7636BD8D23571F6938864F
+    )
+    FetchContent_MakeAvailable(openssl_mingw)
+    set(OPENSSL_ROOT_DIR ${openssl_mingw_SOURCE_DIR}/mingw64)
+    set(OPENSSL_USE_STATIC_LIBS TRUE)
+endif()
 find_package(OpenSSL REQUIRED)
 
 add_executable(MessengerServer main.cpp
@@ -63,14 +74,14 @@ add_executable(MessengerServer main.cpp
         repositories/UsersRepository/UsersRepository.h
         repositories/ChatsRepository/ChatsRepository.cpp
         repositories/ChatsRepository/ChatsRepository.h
-        repositories/ChatsRepository/DTOs/responses/ChatListResponse.h
-        repositories/ChatsRepository/DTOs/responses/ChatResponse.h
-        repositories/ChatsRepository/DTOs/responses/ChatSummaryListResponse.h
-        repositories/ChatsRepository/DTOs/responses/ChatViewResponse.h
+        services/ChatsService/DTOs/responses/ChatListResponse.h
+        services/ChatsService/DTOs/responses/ChatResponse.h
+        services/ChatsService/DTOs/responses/ChatSummaryListResponse.h
+        services/ChatsService/DTOs/responses/ChatViewResponse.h
         repositories/MessagesRepository/MessagesRepository.cpp
         repositories/MessagesRepository/MessagesRepository.h
-        repositories/MessagesRepository/DTOs/responses/MessageResponse.h
-        repositories/MessagesRepository/DTOs/responses/MessageListResponse.h
+        services/MessagesService/DTOs/responses/MessageResponse.h
+        services/MessagesService/DTOs/responses/MessageListResponse.h
         common/response/Response.h
         common/security/PasswordHasher.cpp
         common/security/PasswordHasher.h
@@ -81,7 +92,14 @@ add_executable(MessengerServer main.cpp
         services/AuthService/AuthService.cpp
         services/AuthService/AuthService.h
         services/AuthService/DTOs/responses/AuthResponse.h
+        services/UsersService/UsersService.cpp
+        services/UsersService/UsersService.h
+        services/UsersService/DTOs/responses/UserIdResponse.h
 )
 
 target_include_directories(MessengerServer PRIVATE ${crossguid_SOURCE_DIR})
 target_link_libraries(MessengerServer PRIVATE xg OpenSSL::Crypto Crow::Crow)
+if(WIN32)
+    # Asio's Windows sockets need these; Crow does not link them under MinGW.
+    target_link_libraries(MessengerServer PRIVATE mswsock ws2_32)
+endif()

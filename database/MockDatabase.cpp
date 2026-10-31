@@ -6,6 +6,7 @@ User MockDatabase::insertUser(User user) {
     user.id = nextUserId++;
 
     users.emplace(user.id, user);
+    userIdsByUsername.emplace(user.username, user.id);
     return user;
 }
 
@@ -18,12 +19,11 @@ std::optional<User> MockDatabase::findUserById(int id) const {
 }
 
 std::optional<User> MockDatabase::findUserByUsername(const std::string& username) const {
-    for (const auto& [id, user] : users) {
-        if (user.username == username) {
-            return user;
-        }
+    const auto it = userIdsByUsername.find(username);
+    if (it == userIdsByUsername.end()) {
+        return std::nullopt;
     }
-    return std::nullopt;
+    return findUserById(it->second);
 }
 
 void MockDatabase::insertChat(const Chat& chat) {

@@ -5,8 +5,8 @@
 
 #include "../../entities/Chat.h"
 #include "../../entities/Message.h"
-#include "../../repositories/ChatsRepository/DTOs/responses/ChatSummaryListResponse.h"
-#include "../../repositories/ChatsRepository/DTOs/responses/ChatViewResponse.h"
+#include "../../services/ChatsService/DTOs/responses/ChatSummaryListResponse.h"
+#include "../../services/ChatsService/DTOs/responses/ChatViewResponse.h"
 #include "../../services/AuthService/DTOs/responses/AuthResponse.h"
 
 // Timestamps are milliseconds since the Unix epoch.

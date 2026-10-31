@@ -2,13 +2,14 @@
 
 #include <optional>
 #include <vector>
+#include <iostream>
 
 #include "../http/HttpResponses.h"
 #include "../http/JsonBody.h"
 #include "../json/JsonMapper.h"
 
-ChatsController::ChatsController(ChatsService& chatsService, const AuthGuard& authGuard)
-    : chatsService(chatsService), authGuard(authGuard) {}
+ChatsController::ChatsController(ChatsService& chatsService, UsersService& usersService, const AuthGuard& authGuard)
+    : chatsService(chatsService), usersService(usersService), authGuard(authGuard) {}
 
 void ChatsController::registerRoutes(crow::SimpleApp& app) {
     CROW_ROUTE(app, "/chats").methods(crow::HTTPMethod::GET)([this](const crow::request& request) {
@@ -26,7 +27,7 @@ void ChatsController::registerRoutes(crow::SimpleApp& app) {
             return getChatView(chatId, userId);
         });
     });
-    CROW_ROUTE(app, "/chats/<string>").methods(crow::HTTPMethod::DELETE)([this](const crow::request& request, const std::string& chatId) {
+    CROW_ROUTE(app, "/chats/<string>").methods(crow::HTTPMethod::Delete)([this](const crow::request& request, const std::string& chatId) {
         return authGuard.withUser(request, [&](int userId) {
             return deleteChat(chatId, userId);
         });
@@ -43,14 +44,21 @@ crow::response ChatsController::getChats(int userId) {
 
 crow::response ChatsController::createChat(const crow::request& request, int userId) {
     const std::optional<JsonBody> body = JsonBody::parse(request);
-    std::optional<std::vector<int>> userIds = body ? body->getIntList("userIds") : std::nullopt;
-    if (!userIds.has_value()) {
-        return HttpResponses::error(400, "userIds must be a list of user IDs");
+    std::optional<std::string> username = body ? body->getString("username") : std::nullopt;
+    if (!username.has_value()) {
+        return HttpResponses::error(400, "Username missing");
     }
 
-    userIds->push_back(userId);
-    const ChatResponse response = chatsService.addChat(*userIds);
-    if (!response.success_) {
+    const UserIdResponse partnerUserId = usersService.getUserIdByUsername(username.value());
+    if (partnerUserId.not_found()) {
+        return HttpResponses::error(404, "User not found");
+    }
+    if (*partnerUserId.response_data == userId) {
+        return HttpResponses::error(400, "You can't create a chat with yourself");
+    }
+
+    const ChatResponse response = chatsService.addChat({userId, *partnerUserId.response_data});
+    if (!response.success) {
         return HttpResponses::error(400, "A chat needs at least one other existing user");
     }
     return HttpResponses::json(200, JsonMapper::toJson(*response.response_data));
