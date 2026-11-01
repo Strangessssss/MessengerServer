@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "../../database/Database.h"
-#include "../../entities/Chat.h"
+#include "../../database/Database/Database.h"
+#include "../../entities/Chat/Chat.h"
 
 class ChatsRepository {
     public:
