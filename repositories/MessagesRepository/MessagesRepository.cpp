@@ -23,10 +23,6 @@ std::optional<Message> MessagesRepository::get_latest_message(std::string chatId
     return messages.back();
 }
 
-void MessagesRepository::mark_received(std::string chatId, int recipientId) {
-    database.markMessagesReceived(chatId, recipientId);
-}
-
 void MessagesRepository::mark_read(std::string chatId, int readerId) {
     database.markMessagesRead(chatId, readerId);
 }

@@ -45,10 +45,14 @@ ChatSummaryListResponse ChatsService::getChats(int userId) const {
         summary.chatId = chat.id;
         summary.partnerUsername = getPartnerUsername(chat, userId);
 
-        const std::optional<Message> latest = messagesRepository.get_latest_message(chat.id);
-        if (latest.has_value()) {
-            summary.latestMessage = LatestMessage{latest->text, latest->createdAt, latest->status};
+        const std::vector<Message> messages = messagesRepository.get_messages(chat.id);
+        if (!messages.empty()) {
+            const Message& latest = messages.back();
+            summary.latestMessage = LatestMessage{latest.text, latest.createdAt, latest.status};
         }
+        summary.unreadCount = static_cast<int>(std::ranges::count_if(messages, [userId](const Message& message) {
+            return message.sender != userId && message.status != Read;
+        }));
         summaries.push_back(std::move(summary));
     }
     return ChatSummaryListResponse(std::move(summaries));

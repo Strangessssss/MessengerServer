@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "../../../../common/response/Response.h"
-#include "../../../../entities/Message.h"
+#include "../../../../entities/Message/Message.h"
 
 struct ChatView {
     std::string chatId;

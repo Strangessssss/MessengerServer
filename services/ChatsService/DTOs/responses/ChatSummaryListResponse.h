@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "../../../../common/response/Response.h"
-#include "../../../../enums/MessageStatus.h"
+#include "../../../../enums/MessageStatus/MessageStatus.h"
 
 struct LatestMessage {
     std::string text;
@@ -17,6 +17,7 @@ struct ChatSummary {
     std::string chatId;
     std::string partnerUsername;
     std::optional<LatestMessage> latestMessage;
+    int unreadCount = 0;
 };
 
 struct ChatSummaryListResponse: Response<std::vector<ChatSummary>> {

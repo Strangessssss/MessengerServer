@@ -1,8 +1,8 @@
 #pragma once
 #include <optional>
 
-#include "../../database/Database.h"
-#include "../../entities/User.h"
+#include "../../database/Database/Database.h"
+#include "../../entities/User/User.h"
 
 class UsersRepository {
     public:
